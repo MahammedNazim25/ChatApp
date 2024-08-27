@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    background-color: rgb(236, 232, 226);
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 0 0 10px rgb(92, 90, 90);
+    justify-content: center;
+
+}
+
+input {
+    width: 300px;
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+button {
+    width: 300px;
+    height: 30px;
+    font-size: 1.2rem;
+    background-color: rgb(25, 165, 13);
+    border: 1px solid black;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bolder;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: rgb(98, 138, 89);
+    color: rgb(17, 18, 19);
+}
+
+.error {
+    color: red;
+    font-size: 1.2rem;
+    font-weight: bolder;
+    margin-top: 10px;
+}
+
+.link-button {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: bolder;
+    text-decoration: none;
+    color: black;
+}
+
+.link-button:hover {
+    color: aliceblue;
+    background-color: blueviolet;
+}
+.buttons .button {
+    display: flexbox;
+    padding: 8px 16px;
+    background-color:blue;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: -15%;
+}
+
+.buttons .button:hover {
+    background-color: #0056b3;
+}
+.got{
+    margin-top: 50px;
+    
+}
+@media only screen and (max-width: 600px) {
+    form {
+        width: 90%; 
+    }
+
+    input, button {
+        width: 100%; 
+        max-width: none; 
+    }
+}
