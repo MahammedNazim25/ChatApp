@@ -24,6 +24,17 @@ const Signin = () => {
 
     return (
         <div className="container">
+      <ul>
+        <li>
+          <Link to="/Help">Help</Link>
+        </li>
+        <li>
+          <Link to="/Policy">Policy</Link>
+        </li>
+        <li>
+          <Link to="/About">About</Link>
+        </li>
+      </ul>
             <h1>Sign In</h1>
             <form onSubmit={handleSignin}>
                 <input

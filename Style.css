@@ -13,6 +13,24 @@ body {
     height: 100vh;
 }
 
+ul{
+    list-style-type: none;
+    display: flex;
+    margin: 20px 30px 0 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    justify-content: flex-end;
+    padding: 0;
+}
+
+li{
+    color: rgb(234, 233, 225);
+    margin-left: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 h1 {
     font-size: 3rem;
     text-align: center;

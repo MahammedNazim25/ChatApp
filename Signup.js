@@ -29,7 +29,17 @@ const Signup = () => {
 
     return (
         <div className="container">
-
+<ul>
+        <li>
+          <Link to="/Help">Help</Link>
+        </li>
+        <li>
+          <Link to="/Policy">Policy</Link>
+        </li>
+        <li>
+          <Link to="/About">About</Link>
+        </li>
+      </ul>
             <h1>Sign Up</h1>
             <form onSubmit={handleSignup}>
                 <input
@@ -48,10 +58,9 @@ const Signup = () => {
 
                 <button type="submit">Sign Up</button>
 
-z
                 {error && <p className="error">{error}</p>}
                 <p>Already have an account?</p>
-                <button onClick={() => navigate("/Signin")} className="link-btn">Login</button>
+                <button onClick={() => navigate("/")} className="link-btn">Login</button>
 
             </form>
         </div>
