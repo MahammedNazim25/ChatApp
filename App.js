@@ -1,39 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Signin from './Components/Signin';
-import Signup from './Components/Signup';
-import Home from './Components/Home'; 
-import Signout from './Components/Signout';
-import Chatgrp from './Components/Chatgrp';
-import Makegrp from './Components/Makegrp';
-import Chatwindow from './Components/Chatwindow';
-import Contactus from './Components/Contactus';
-import ManageProfile from './Components/Manageprofile';
-import Forgotpassword from './Components/Forgotpassword';
+import Signup from './Components/Singup';
+import Home from './Components/Navbar';
 import './App.css';
-import Chatting from './Components/Chatting';
+import { Chat } from './Components/Chat';
+import { auth } from './Firebase'; 
+import Signout from './Components/Signout';
+import Help from './Components/Help';
+import AboutUs from './Components/About';
 
 function App() {
-  const [messages, setMessages] = useState([]);
+  const [userEmail, setUserEmail] = useState("Anonymous"); 
+  
 
-  const handleSendMessage = (newMessage) => {
-    setMessages([...messages, newMessage]);
-  };
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserEmail(user.email || "Anonymous"); 
+      } else {
+        setUserEmail("Anonymous");
+      }
+    });
+
+    return () => unsubscribe(); 
+  }, []);
 
   return (
     <Router>
       <div className="App">
         <Routes>
           <Route path="/" element={<Signin />} />
+          <Route path='/help' element={<Help/>}/>
+        <Route path='/About' element={<AboutUs/>}/>
           <Route path="/signup" element={<Signup />} />
-          <Route path="/home" element={<Home />} /> 
-          <Route path="/signout" element={<Signout />} />
-          <Route path='/Chatting' element={<Chatting />} />
-          {/* <Route path="/Chatgrp" element={<Chatgrp />} /> */}
-          <Route path="/makegrp" element={<Makegrp />} />
-          <Route path="/contactus" element={<Contactus />} />
-          <Route path="/manageprofile" element={<ManageProfile />} />
-          <Route path="/forgotpassword" element={<Forgotpassword />} />
+          <Route path="/Navbar" element={<Home />} />
+          <Route path="/Chat" element={<Chat room="general" userEmail={userEmail} />} />
+          <Route path="/Signout" element={<Signout />} />
+
         </Routes>
       </div>
     </Router>

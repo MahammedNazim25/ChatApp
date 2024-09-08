@@ -1,69 +1,88 @@
-import React, { useState, useEffect } from "react";
-import { db } from "../Firebase.js"; 
-import { addDoc, serverTimestamp, collection, query, onSnapshot, where, orderBy } from "firebase/firestore";
-import { getAuth } from "firebase/auth"; 
+import { db } from "../Firebase.js";
+import { collection, addDoc, where, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import "./Chatarea.css";
+import Navbar from "./Navbar.js";
+import Footer from "./Footer.js";
 
-
-export const Chat = ({ room, userName }) => {
+export const Chat = ({ room = "NRM Room", userEmail = "Anonymous" }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesRef = collection(db, "messages");
 
-  const auth = getAuth(); 
-  
   useEffect(() => {
-    if (!room) return;
-
-    const messagesRef = collection(db, "messages");
-    const q = query(messagesRef, where("room", "==", room), orderBy("createdAt", "asc"));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      let messagesArray = [];
+    const queryMessages = query(
+      messagesRef,
+      where("room", "==", room),
+      orderBy("createdAt")
+    );
+    const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
+      let messages = [];
       snapshot.forEach((doc) => {
-        messagesArray.push({ ...doc.data(), id: doc.id });
+        messages.push({ ...doc.data(), id: doc.id });
       });
-      setMessages(messagesArray);
+      setMessages(messages);
     });
 
     return () => unsubscribe();
   }, [room]);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (newMessage.trim() === "") return;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (newMessage === "") return;
 
-    await addDoc(collection(db, "messages"), {
+    await addDoc(messagesRef, {
       text: newMessage,
       createdAt: serverTimestamp(),
-      user: auth.currentUser ? auth.currentUser.displayName : userName, // Use current user's display name or fallback to passed userName prop
+      user: userEmail || "Anonymous", 
       room,
     });
 
     setNewMessage("");
   };
 
+  const handleDeleteMessage = async (messageId) => {
+    try {
+      await deleteDoc(doc(db, "messages", messageId));
+      console.log("Message deleted");
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+  };
+
   return (
-    <div className="chat-app">
-      <div className="messages">
-        {messages.length > 0 ? (
-          messages.map((message) => (
-            <div key={message.id} className="message">
-              <strong>{message.user}:</strong> {message.text}
-            </div>
-          ))
-        ) : (
-          <p>No messages yet!</p>
-        )}
+    <div className="chat-top">
+      <Navbar/>
+      <div className="chat-app">
+      <div className="header">
+        <h1>NRM Chat</h1>
       </div>
-      <form onSubmit={handleSendMessage}>
+      <div className="messages">
+        {messages.map((message) => (
+          <div key={message.id} className="message">
+            <span className="user">{message.user || "Anonymous"}:</span> {message.text}
+            <button onClick={() => handleDeleteMessage(message.id)} className="delete-button">
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+      <form onSubmit={handleSubmit} className="new-message-form">
         <input
           type="text"
           value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type your message..."
+          onChange={(event) => setNewMessage(event.target.value)}
+          className="new-message-input"
+          placeholder="Type your message here..."
         />
-        <button type="submit">Send</button>
+        <button type="submit" className="send-button">
+          Send
+        </button>
       </form>
+    </div>
+    <Footer/>
     </div>
   );
 };
+
+export default Chat;

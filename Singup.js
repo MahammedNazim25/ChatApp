@@ -1,42 +1,40 @@
 import { auth, db } from "../Firebase.js";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore"; 
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore"; 
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import "../styles.css";
-import Footer from "./Footer.js";
-import Navbar from "./Navbar.js";
 
-
-const Signin = () => {
+const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState(""); 
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const handleSignin = async (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+            await updateProfile(user, { displayName: name });
 
-            const q = query(collection(db, "users"), where("uid", "==", user.uid));
-            const querySnapshot = await getDocs(q);
-            let name = "";
-            querySnapshot.forEach((doc) => {
-                name = doc.data().name;
+    
+            await addDoc(collection(db, "users"), {
+                uid: user.uid,
+                name: name,
+                email: user.email,
             });
 
-           
-            navigate("/Chat", { state: { name: name } });
+ 
+            navigate("/Navbar", { state: { name: name } });
         } catch (error) {
             setError(error.message);
         }
     };
 
     return (
-         <div className="container">
-          {/* <Navbar/> */}
+        <div className="container">
             <ul className="top">
         <li className="list1">
           <Link to="/Help">Help</Link>
@@ -48,8 +46,15 @@ const Signin = () => {
           <Link to="/About">About</Link>
         </li>
       </ul>
-            <h1>Sign In</h1>
-            <form onSubmit={handleSignin}>
+            <h1>Sign Up</h1>
+            <form onSubmit={handleSignup}>
+                <input
+                    type="text"
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
                 <input
                     type="email"
                     placeholder="Enter your email"
@@ -64,14 +69,13 @@ const Signin = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Sign In</button>
-                {error && <p>{error}</p>}
-                <p>Don't have an account?</p>
-                <button onClick={() => navigate("/signup")} className="link-btn">Sign Up</button>
+                <button type="submit">Sign Up</button>
+                {error && <p className="error">{error}</p>}
             </form>
-            <Footer/>
+            <p>Already have an account?</p>
+            <button onClick={() => navigate("/")} className="link-btn">Login</button>
         </div>
     );
 };
 
-export default Signin;
+export default Signup;
