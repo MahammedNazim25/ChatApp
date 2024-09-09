@@ -1,5 +1,5 @@
 import { db } from "../Firebase.js";
-import { collection, addDoc, where, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, where, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import "./Chatarea.css";
 import Navbar from "./Navbar.js";
@@ -10,8 +10,25 @@ import DailyIframe from '@daily-co/daily-js';
 export const Chat = ({ room = "NRM Room", userEmail = "Anonymous" }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [users, setUsers] = useState([]);
   const [daily, setDaily] = useState(null);
+  const [videoCallActive, setVideoCallActive] = useState(false);
   const messagesRef = collection(db, "messages");
+  const usersRef = collection(db, "users");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const snapshot = await getDocs(usersRef);
+        const usersList = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        setUsers(usersList);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     const queryMessages = query(
@@ -61,6 +78,7 @@ export const Chat = ({ room = "NRM Room", userEmail = "Anonymous" }) => {
       const newDaily = DailyIframe.wrap(document.getElementById('daily-video-container'));
       await newDaily.join({ url: roomData.url });
       setDaily(newDaily);
+      setVideoCallActive(true);
     } catch (error) {
       console.error("Error starting video call:", error);
     }
@@ -71,6 +89,7 @@ export const Chat = ({ room = "NRM Room", userEmail = "Anonymous" }) => {
       daily.leave();
       daily.destroy();
       setDaily(null);
+      setVideoCallActive(false);
     }
   };
 
@@ -80,6 +99,14 @@ export const Chat = ({ room = "NRM Room", userEmail = "Anonymous" }) => {
       <div className="chat-app">
         <div className="header">
           <h1>NRM Chat</h1>
+        </div>
+        <div className="users">
+          <h2>Users</h2>
+          <ul>
+            {users.map(user => (
+              <li key={user.id}>{user.email}</li>
+            ))}
+          </ul>
         </div>
         <div className="messages">
           {messages.map((message) => (
@@ -103,12 +130,17 @@ export const Chat = ({ room = "NRM Room", userEmail = "Anonymous" }) => {
             Send
           </button>
         </form>
-        <button onClick={startVideoCall} className="video-call-button">
-          Start Video Call
-        </button>
-        <button onClick={endVideoCall} className="video-call-button">
-          End Video Call
-        </button>
+        <div className="video-call-controls">
+          {!videoCallActive ? (
+            <button onClick={startVideoCall} className="video-call-button">
+              Start Video Call
+            </button>
+          ) : (
+            <button onClick={endVideoCall} className="video-call-button">
+              End Video Call
+            </button>
+          )}
+        </div>
         <div id="daily-video-container" style={{ height: '500px', width: '100%' }}></div>
       </div>
       <Footer/>
