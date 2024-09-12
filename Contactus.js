@@ -43,13 +43,8 @@ const Contactus = () => {
 
   return (
     <div className="contactus-container">
-      <header>
-        <nav>
-          <a href="/Home">Home</a>
-          <a href="/help">Help</a>
-          <a href="/contactus">Contact Us</a>
-        </nav>
-      </header>
+     
+    
       <main className="contactus-main">
         <h1>Contact Us</h1>
         <form onSubmit={handleSubmit} className="contact-form">
@@ -104,3 +99,4 @@ const Contactus = () => {
 };
 
 export default Contactus;
+  
