@@ -10,10 +10,7 @@ import Footer from "./Footer.js";
 function Navbar() {
 
     const navigate = useNavigate();
-  const [DropmenuView, setDropmenuiew] = useState(false);
-
-
-  const handleSignout = async () => {
+    const handleSignout = async () => {
     try {
         await signOut(auth);
         navigate("/")
@@ -22,27 +19,16 @@ function Navbar() {
     }
     };
 
-    const handleDropmenu =() =>{
-      setDropmenuiew(!DropmenuView);
-    };
-
     return (
         <div className="Navbar">
-        {/* <div className="logo">
-               <img src={LOGO} alt="Logo" className="logo" />
-               </div> */}
-       
         <ul>
             <li><Link to ="/Chat">Chatting</Link></li>
-            <li><Link to ="/Chatgrp">Groups</Link></li>
-            <li><Link to ="/Call">Calls</Link></li>
-            <li><Link to ="/Videocall">Video Calls</Link></li>  
+            <li><Link to ="/GroupCall">GroupCall</Link></li>  
             <li><Link to ="/Manageprofile">Manage Profile</Link></li>
             <li><Link to ="/Admin">Admin</Link></li>
-            <li><Link to ="/Upload">Upload Files</Link></li>
-            <li><Link to ="/Contactus">Help</Link></li>
+            <li><Link to ="/ContactUs">Contact</Link></li>
             <li className="buttons">
-            <li><Link onClick={handleSignout} id="signOut">LogOut</Link></li>            </li>
+            <li><Link onClick={handleSignout} id="signOut"><strong>LogOut</strong></Link></li></li>
         </ul>
     </div>
     

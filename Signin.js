@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore"; 
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
-import "../styles.css";
+import "./nav.css";
 import Footer from "./Footer.js";
 import Navbar from "./Navbar.js";
 
@@ -28,15 +28,15 @@ const Signin = () => {
             });
 
            
-            navigate("/Chat", { state: { name: name } });
+            navigate("/Welcome", { state: { email: user.email } });
         } catch (error) {
             setError(error.message);
         }
     };
 
     return (
+        <div className="abs">
          <div className="container">
-          {/* <Navbar/> */}
             <ul className="top">
         <li className="list1">
           <Link to="/Help">Help</Link>
@@ -48,8 +48,12 @@ const Signin = () => {
           <Link to="/About">About</Link>
         </li>
       </ul>
-            <h1>Sign In</h1>
+      <div className="outer">
+        La Connecxion<br/> 
+      </div>
             <form onSubmit={handleSignin}>
+            <h1>Sign In</h1>
+
                 <input
                     type="email"
                     placeholder="Enter your email"
@@ -64,11 +68,11 @@ const Signin = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Sign In</button>
+                <button type="submit" className="signbtn">Sign In</button>
                 {error && <p>{error}</p>}
                 <p>Don't have an account?</p>
                 <button onClick={() => navigate("/signup")} className="link-btn">Sign Up</button>
-            </form>
+            </form></div>
             <Footer/>
         </div>
     );

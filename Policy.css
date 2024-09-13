@@ -1,0 +1,135 @@
+.privacy-policy-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+  }
+  
+  .back-button {
+    background-color: #19646b;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+  
+  .back-button:hover {
+    background-color: #14585a;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 1rem;
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  ul {
+    list-style-type: disc;
+    margin: 0;
+    padding: 0 20px;
+  }
+  
+  ul li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .contact-info {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  .contact-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .contact-info p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .contact-info a {
+    color: #19646b;
+    text-decoration: none;
+  }
+  
+  footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  footer p {
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 1.75rem;
+    }
+  
+    h2 {
+      font-size: 1.25rem;
+    }
+  
+    p {
+      font-size: 0.9rem;
+    }
+  
+    .contact-info h2 {
+      font-size: 1.25rem;
+    }
+  
+    .contact-info p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.5rem;
+    }
+  
+    h2 {
+      font-size: 1.1rem;
+    }
+  
+    p {
+      font-size: 0.85rem;
+    }
+  
+    .contact-info h2 {
+      font-size: 1.1rem;
+    }
+  
+    .contact-info p {
+      font-size: 0.85rem;
+    }
+  
+    .back-button {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+  }
+  

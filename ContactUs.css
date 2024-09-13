@@ -1,0 +1,136 @@
+/* General Styling for the Contact Us Page */
+.contact-us-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .contact-us-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .contact-us-container h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #19646b;
+  }
+  
+  /* Form Group Styling */
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .input-group input,
+  .input-group textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input-group input:focus,
+  .input-group textarea:focus {
+    border-color: #19646b;
+    outline: none;
+  }
+  
+  .input-group textarea {
+    resize: none;
+    height: 120px;
+  }
+  
+  /* Submit Button Styling */
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #19646b;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-btn:hover {
+    background-color: #145757;
+  }
+  
+  /* Success and Error Messages */
+  .success-message {
+    color: green;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Responsive Styling */
+  @media (max-width: 768px) {
+    .contact-us-container {
+      padding: 15px;
+      margin: 20px auto;
+    }
+  
+    .contact-us-container h2 {
+      font-size: 24px;
+    }
+  
+    .input-group input,
+    .input-group textarea {
+      padding: 10px;
+      font-size: 15px;
+    }
+  
+    .submit-btn {
+      padding: 10px;
+      font-size: 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .contact-us-container {
+      padding: 10px;
+      margin: 15px auto;
+    }
+  
+    .contact-us-container h2 {
+      font-size: 22px;
+    }
+  
+    .input-group input,
+    .input-group textarea {
+      padding: 8px;
+      font-size: 14px;
+    }
+  
+    .submit-btn {
+      padding: 8px;
+      font-size: 15px;
+    }
+  }
+  
+  /* Footer at Bottom of the Page */
+  footer {
+    margin-top: auto;
+  }
+  

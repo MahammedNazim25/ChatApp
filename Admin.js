@@ -1,100 +1,104 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import './Admin.css';
+import React, { useState, useEffect } from 'react';
+import { db } from '../Firebase';
+import { collection, query, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import './Admin.css'; // Ensure you create this CSS file for styling
+import Navbar from './Navbar';
+import Footer from './Footer';
 
-function Admin() {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [role, setRole] = useState('user');
-    const [users, setUsers] = useState([
-        { username: 'Rachna', email: 'rachnaaulakh@gmail.com', role: 'user' },
-        { username: 'Navneet', email: 'Navneet@gmail.com', role: 'admin' }
-    ]);
+const Admin = () => {
+  const [users, setUsers] = useState([]);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [inviteStatus, setInviteStatus] = useState('');
 
-    const handleAddUser = (e) => {
-        e.preventDefault();
-        const newUser = { username, email, role };
-        setUsers([...users, newUser]);
-        setUsername('');
-        setEmail('');
-        setRole('user');
-        alert('new User is added');
-    };
+  const usersRef = collection(db, "users");
 
-    const handleDeleteUser = (index) => {
-        const updatedUsers = users.filter((_, i) => i !== index);
-        setUsers(updatedUsers);
-        alert('User is successfully deleted');
-    };
+  useEffect(() => {
+    const unsubscribe = onSnapshot(usersRef, (snapshot) => {
+      const usersList = [];
+      snapshot.forEach((doc) => {
+        usersList.push({ id: doc.id, ...doc.data() });
+      });
+      setUsers(usersList);
+    });
 
-    return (
-        <div className="admin">
-            <h1>Admin Form</h1>
+    return () => unsubscribe();
+  }, []);
 
-            <section className="section">
-                <h2>Add New User</h2>
-                <form onSubmit={handleAddUser}>
-                    <div>
-                        <label>Username:</label>
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Email:</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Role:</label>
-                        <select
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            required
-                        >
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
-                    <button type="submit">Add User</button>
-                </form>
-            </section>
+  const handleInviteUser = async (event) => {
+    event.preventDefault();
+    if (!email || !name) {
+      alert('Please provide both name and email.');
+      return;
+    }
 
-            <section className="admin-section">
-                <h2>Manage Users History</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user, index) => (
-                            <tr key={index}>
-                                <td>{user.username}</td>
-                                <td>{user.email}</td>
-                                <td>{user.role}</td>
-                                <td>
-                                    <button onClick={() => handleDeleteUser(index)}>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </section>
-            <Link to="/admin/groups">Manage Groups</Link>
-        </div>
-    );
-}
+    try {
+      await addDoc(usersRef, { email, name });
+      setInviteStatus('User invited successfully!');
+      setEmail('');
+      setName('');
+    } catch (error) {
+      console.error("Error inviting user:", error);
+      setInviteStatus('Failed to invite user.');
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    const confirmation = window.confirm("Are you sure you want to delete this user?");
+    if (confirmation) {
+      try {
+        await deleteDoc(doc(db, "users", userId));
+        console.log("User deleted");
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    }
+  };
+
+  return (
+    <div>
+    <Navbar/>
+
+    <div className="admin-container">
+      <div className="invite-user">
+        <h1>Invite User</h1>
+        <form onSubmit={handleInviteUser} className="invite-form">
+          <input 
+            type="text" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)} 
+            placeholder="Name" 
+            required 
+          />
+          <input 
+            type="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            placeholder="Email" 
+            required 
+          />
+          <button type="submit" className="invite-button">Invite</button>
+          {inviteStatus && <p className="invite-status">{inviteStatus}</p>}
+        </form>
+      </div>
+      
+      <div className="manage-users">
+        <h2>Manage Users</h2>
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>
+              {user.name} ({user.email})
+              <button onClick={() => handleDeleteUser(user.id)} className="delete-user-button">
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <Footer/>
+    </div>
+  );
+};
 
 export default Admin;

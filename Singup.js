@@ -3,7 +3,8 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore"; 
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
-import "../styles.css";
+import "./nav.css";
+import Footer from "./Footer.js";
 
 const Signup = () => {
     const [email, setEmail] = useState("");
@@ -27,13 +28,14 @@ const Signup = () => {
             });
 
  
-            navigate("/Navbar", { state: { name: name } });
+            navigate("/NavbWelcome", { state: { email: user.email }  });
         } catch (error) {
             setError(error.message);
         }
     };
 
     return (
+        <div >
         <div className="container">
             <ul className="top">
         <li className="list1">
@@ -46,15 +48,12 @@ const Signup = () => {
           <Link to="/About">About</Link>
         </li>
       </ul>
-            <h1>Sign Up</h1>
+      <div className="outer">
+      La Connecxion<br/>
+      </div>
             <form onSubmit={handleSignup}>
-                <input
-                    type="text"
-                    placeholder="Enter your name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
+            <h1>Sign Up</h1>
+            
                 <input
                     type="email"
                     placeholder="Enter your email"
@@ -69,11 +68,12 @@ const Signup = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Sign Up</button>
+                <button type="submit" className="signbtn">Sign Up</button>
                 {error && <p className="error">{error}</p>}
-            </form>
             <p>Already have an account?</p>
             <button onClick={() => navigate("/")} className="link-btn">Login</button>
+            </form></div>
+            <Footer/>
         </div>
     );
 };
