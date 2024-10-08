@@ -1,0 +1,176 @@
+
+package AutomaticTesting;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+class ChatTest {
+    private WebDriver driver;
+    private WebDriverWait wait;
+
+    @BeforeEach
+    public void setUp() {
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.get("http://localhost:3000");
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+ 
+
+    @Test
+    void testSignIn() {
+        // Sign in with valid credentials
+        driver.findElement(By.xpath("/html/body/div/div/div/div/form/input[1]")).sendKeys("nazim.1@gmail.com");
+        driver.findElement(By.xpath("/html/body/div/div/div/div/form/input[2]")).sendKeys("Nazim11");
+        driver.findElement(By.xpath("/html/body/div/div/div/div/form/button[1]")).click();
+
+        // Verify the redirection to welcome page
+        wait.until(ExpectedConditions.urlToBe("http://localhost:3000/Welcome"));
+        assertEquals("http://localhost:3000/Welcome", driver.getCurrentUrl(), "Sign-in failed: URL mismatch after login");
+    }
+
+    @Test
+    void testSendMessage() {
+        testSignIn(); // Sign in first
+
+        // Navigate to Chat Section
+        driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/button[1]")).click();
+
+        // Enter a message in chat
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/input")).sendKeys("Hello, this is a test message.");
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/button")).click();
+
+        // Verify the message appears in chat
+        assertTrue(driver.getPageSource().contains("Hello, this is a test message."), "Message not sent or not displayed");
+    }
+
+    @Test
+    void testSendEmptyMessage() {
+        testSignIn(); // Sign in first
+
+        // Navigate to Chat Section
+        driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/button[1]")).click();
+
+        // Attempt to send an empty message
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/button")).click();
+
+        // Verify error message for empty message
+        assertTrue(driver.getPageSource().contains("Message cannot be empty"), "Error message not displayed for empty message");
+    }
+
+    @Test
+    void testUploadFile() {
+        testSignIn(); // Sign in first
+
+        // Navigate to Chat Section
+        driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/button[1]")).click();
+
+        // Verify that file upload input is displayed
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/div[2]/input")));
+
+        // Specify the path to the file you want to upload
+        String filePath = "/Users/mahammed/Downloads/maxfooter.avif"; // Ensure this file exists
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/div[2]/input")).sendKeys(filePath);
+
+        // Click the upload button
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/div[2]/button")).click();
+
+        // Verify that the upload was successful
+        assertTrue(driver.getPageSource().contains("File uploaded successfully"), "File upload confirmation not displayed");
+    }
+
+    @Test
+    void testDeleteMessage() {
+        testSignIn(); // Sign in first
+
+        // Navigate to Chat Section
+        driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/button[1]")).click();
+
+        // Send a test message to delete
+        String testMessage = "Message to delete";
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/input")).sendKeys(testMessage);
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/button")).click();
+
+        // Wait for the message to be sent and visible
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='" + testMessage + "']")));
+
+        // Click the delete button for the message
+        driver.findElement(By.xpath("//*[text()='" + testMessage + "']/following-sibling::button[contains(text(),'Delete')]")).click();
+
+        // Verify that the message is deleted
+        assertFalse(driver.getPageSource().contains(testMessage), "Message not deleted");
+    }
+
+    @Test
+    void testRenderMessageWithLinks() {
+        testSignIn(); // Sign in first
+
+        // Navigate to Chat Section
+        driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/button[1]")).click();
+
+        // Send a message containing a link
+        String linkMessage = "Check out this link: https://example.com";
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/input")).sendKeys(linkMessage);
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/button")).click();
+
+        // Verify that the message containing the link is rendered
+        assertTrue(driver.getPageSource().contains("Check out this link: https://example.com"), "Link message not displayed");
+    }
+
+    @Test
+    void testUserListDisplay() {
+        testSignIn(); // Sign in first
+
+        // Navigate to Chat Section
+        driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/button[1]")).click();
+
+        // Verify that the user list is displayed
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("user-list")));
+
+        assertTrue(driver.findElement(By.className("user-list")).isDisplayed(), "User list is not displayed");
+    }
+
+    @Test
+    void testSessionPersistence() {
+        testSignIn(); // Sign in first
+
+        // Navigate to another page
+        driver.get("http://localhost:3000/AnotherPage");
+        
+        // Go back to Chat Section
+        driver.get("http://localhost:3000/Chat");
+
+        // Verify that the user is still signed in
+        assertTrue(driver.getPageSource().contains("Welcome back"), "User session not persisted");
+    }
+    @Test
+    void testSendNumberMessage() {
+        testSignIn(); // Sign in first
+
+        // Navigate to Chat Section
+        driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/button[1]")).click();
+
+        // Enter a message in chat
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/input")).sendKeys("12333.");
+        driver.findElement(By.xpath("//*[@id='root']/div/div/div/div[2]/div[2]/form/button")).click();
+
+        // Verify the message appears in chat
+        assertTrue(driver.getPageSource().contains("12333."), "Message not sent or not displayed");
+    }
+}
