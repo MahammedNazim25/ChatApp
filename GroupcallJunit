@@ -1,0 +1,81 @@
+package AutomaticTesting;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Groupcalling {
+    private WebDriver driver;
+    private WebDriverWait wait;
+
+    @BeforeEach
+    public void setUp() {
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.get("http://localhost:3000/groupcall");
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    @Test
+    public void testPageTitle() {
+        String expectedTitle = "Welcome to the NRM Group Call";
+        String actualTitle = driver.getTitle();
+        assertEquals(expectedTitle, actualTitle, "Page title doesn't match.");
+    }
+
+    @Test
+    public void testJoinButtonExists() {
+        try {
+            assertTrue(driver.findElement(By.className("join-room-button")).isDisplayed(), "Join button not displayed.");
+        } catch (NoSuchElementException e) {
+            fail("Join button element not found using class name. Consider a more robust locator strategy.");
+        }
+    }
+
+    @Test
+    public void testCopyCallLinkExists() {
+        try {
+            assertTrue(driver.findElement(By.className("copy-call-link")).isDisplayed(), "Copy call link not displayed.");
+        } catch (NoSuchElementException e) {
+            fail("Copy call link element not found using class name. Consider a more robust locator strategy.");
+        }
+    }
+
+    @Test
+    public void testJoinButton() {
+        driver.findElement(By.className("join-room-button")).click();
+        
+        try {
+            assertTrue(driver.findElement(By.className("join-room-button")).isDisplayed(), "Join button not displayed.");
+        } catch (NoSuchElementException e) {
+            fail("Join button element not found using class name. Consider a more robust locator strategy.");
+        }
+    }
+
+    @Test
+    public void testJoinButtonDisabled() {
+        driver.findElement(By.className("join-room-button")).click();
+
+        try {
+            assertFalse(driver.findElement(By.className("join-room-button")).isEnabled(), "Join button is still enabled.");
+        } catch (NoSuchElementException e) {
+            fail("Join button element not found using class name. Consider a more robust locator strategy.");
+        }
+    }
+}
